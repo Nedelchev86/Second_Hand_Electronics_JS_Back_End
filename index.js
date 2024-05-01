@@ -13,11 +13,14 @@ const handlebars = require("express-handlebars");
 // const stripeRoute = require("./routes/stripe");
 // const cors = require("cors");
 
+app.use(express.urlencoded({ extended: false }));
 app.engine("hbs", handlebars.engine({extname: ".hbs"}));
 app.set("view engine", "hbs");
 app.set("views", "./views");
 
+
 app.use(express.static("public"));
+
 
 app.listen(5000, () => {
     console.log("backend server is running on http://127.0.0.1:5000");
