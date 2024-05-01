@@ -1,12 +1,15 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const jwt = require("../utils/jwt");
 
 exports.login = async (email, password) => {
     const user = await User.findOne({email});
     if (!user) throw new Error("User not found");
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) throw new Error("Invalid password");
-    return user;
+    const token = await jwt.sign({_id: user._id, email: user.email, username: user.username}, "ferferf345r34wrd34wf34f3", {expiresIn: "2h"});
+
+    return token;
 };
 
 exports.register = async (userData) => {

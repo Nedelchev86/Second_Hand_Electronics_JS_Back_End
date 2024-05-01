@@ -1,0 +1,20 @@
+<section id="viewCatalog" class="background-img">
+    <!--If there are one or more electronics-->
+    {{#if Allelectronics.length}}
+        <div class="added-electronics">
+            {{#each Allelectronics}}
+                <a href="#" class="added-electronics-in-market">
+                    <img src="{{image}}" class="picture-added-electronics" />
+                    <h3>Laptop HP EliteBook 820 G4</h3>
+                    <span>Price: ${{price}}</span>
+                </a>
+
+            {{/each}}
+        </div>
+    {{/if}}
+
+    <!--If there are no electronics in catalog yet-->
+    <!-- <div class="guest">
+                There are no electronics found...
+            </div> -->
+</section>

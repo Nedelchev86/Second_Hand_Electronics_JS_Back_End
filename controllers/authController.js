@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const authService = require("../services/authService");
-const jwt = require("jsonwebtoken");
+const jwt = require("../utils/jwt");
 // const { registerValidation, loginValidation } = require("../validation");
 
 router.get("/login", (req, res) => {
@@ -10,9 +10,9 @@ router.get("/login", (req, res) => {
 router.post("/login", async (req, res) => {
     const {email, password} = req.body;
     try {
-        const user = await authService.login(email, password);
-        const token = jwt.sign({userId: user._id, enail: user.email, username: user.username}, "ferferf345r34wrd34wf34f3", {expiresIn: "2h"});
-        res.cookie("auth", token, {httpOnly: true});
+        const token = await authService.login(email, password);
+
+        res.cookie("auth", token);
         res.redirect("/");
     } catch (error) {
         res.render("login", {errorMessage: error.message});
