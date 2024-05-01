@@ -1,40 +1,34 @@
-const authController = require("express").Router();
+const router = require("express").Router();
 const authService = require("../services/authService");
-// const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 // const { registerValidation, loginValidation } = require("../validation");
 
-authController.get("/login", (req, res) => {
+router.get("/login", (req, res) => {
     res.render("login");
 });
 
-authController.post("/login", async (req, res) => {
-    const { email, password } = req.body;
+router.post("/login", async (req, res) => {
+    const {email, password} = req.body;
     try {
         const user = await authService.login(email, password);
-        const token = jwt.sign({ userId: user._id }, "your_secret_key_here", { expiresIn: "2h" });
-        res.cookie("auth", token, { httpOnly: true });
-        res.redirect("/"); // Redirect to dashboard or any other authenticated route
+        const token = jwt.sign({userId: user._id, enail: user.email, username: user.username}, "ferferf345r34wrd34wf34f3", {expiresIn: "2h"});
+        res.cookie("auth", token, {httpOnly: true});
+        res.redirect("/");
     } catch (error) {
-        res.render("/login", {errorMessage: error.message, userData: req.body});
+        res.render("login", {errorMessage: error.message});
     }
 });
 
-authController.post("/login", async (req, res) => {
-    // const { error } = loginValidation(req.body);
-    // if (error) return res.status(400).send(error.details[0].message);
+router.post("/login", async (req, res) => {
     const user = await User.findOne({email: req.body.email});
     if (!user) return res.status(400).send("Email or password is wrong");
-    // const validPass = await bcrypt.compare(req.body.password, user.password);
-    // if (!validPass) return res.status(400).send("Email or password is wrong");
-    // const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-    // res.header("auth-token", token).send(token);
 });
 
-authController.get("/register", (req, res) => {
+router.get("/register", (req, res) => {
     res.render("register");
 });
 
-authController.post("/register", async (req, res) => {
+router.post("/register", async (req, res) => {
     try {
         const userData = req.body;
         const savedUser = await authService.register(userData);
@@ -43,4 +37,10 @@ authController.post("/register", async (req, res) => {
         res.render("register", {errorMessage: error.message, userData: req.body});
     }
 });
-module.exports = authController;
+
+router.get("/logout", (req, res) => {
+    res.clearCookie("auth");
+    res.redirect("/");
+});
+
+module.exports = router;
